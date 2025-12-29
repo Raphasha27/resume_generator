@@ -204,4 +204,77 @@ document.getElementById('downloadBtn').onclick = () => {
   html2pdf().set({ margin: 10, filename: 'Raphasha_Resume.pdf' }).from(document.getElementById('resumePreview')).save();
 };
 
+/* AI Assistant Logic */
+const aiModal = document.getElementById('aiModal');
+const aiBtn = document.getElementById('aiBtn');
+const closeAiBtn = document.getElementById('closeAiBtn');
+const aiAckBtn = document.getElementById('aiAckBtn');
+const aiFeedback = document.getElementById('aiFeedback');
+const aiScore = document.getElementById('aiScore');
+
+const toggleAiModal = (show) => {
+  if (show) {
+    aiModal.classList.remove('hidden');
+    runAiAnalysis();
+  } else {
+    aiModal.classList.add('hidden');
+  }
+};
+
+aiBtn.onclick = () => toggleAiModal(true);
+closeAiBtn.onclick = () => toggleAiModal(false);
+aiAckBtn.onclick = () => toggleAiModal(false);
+
+const runAiAnalysis = () => {
+  let score = 0;
+  let feedback = [];
+
+  // Content Analysis Rules
+  if (inputs.name.value.length > 2) score += 10;
+  else feedback.push({ type: 'warning', msg: 'Name is too short.' });
+
+  if (inputs.role.value.length > 2) score += 10;
+  
+  if (inputs.summary.value.length > 50) score += 20;
+  else feedback.push({ type: 'warning', msg: 'Professional summary is too brief. Aim for at least 3 sentences to describe your unique value.' });
+
+  if (state.experience.length >= 2) score += 20;
+  else if (state.experience.length === 1) score += 10;
+  else feedback.push({ type: 'warning', msg: 'Adding more experience (internships, freelance) can boost your credibility.' });
+
+  if (state.education.length >= 1) score += 10;
+
+  if (state.projects.length >= 1) score += 15;
+  else feedback.push({ type: 'warning', msg: 'Projects are crucial for technical roles. Add at least one key project.' });
+
+  if (inputs.skills.value.split(',').length >= 5) score += 15;
+  else feedback.push({ type: 'warning', msg: 'List at least 5 core skills to pass ATS filters.' });
+
+  // Job Specific Suggestions (Simulated)
+  const roleLower = inputs.role.value.toLowerCase();
+  if (roleLower.includes('developer') || roleLower.includes('engineer')) {
+     if (!inputs.skills.value.toLowerCase().includes('git')) {
+       feedback.push({ type: 'suggestion', msg: '🤖 Suggested Skill: "Git" is standard for this role.' });
+     }
+  }
+
+  // Cap Score
+  score = Math.min(100, score);
+  
+  // Render
+  animateScore(score);
+  aiFeedback.innerHTML = feedback.length > 0 
+    ? feedback.map(f => `<div class="ai-item ${f.type}">${f.msg}</div>`).join('')
+    : '<div class="ai-item success">🎉 Perfect! Your resume is looking strong.</div>';
+};
+
+const animateScore = (target) => {
+  let current = 0;
+  const timer = setInterval(() => {
+    current += 1;
+    aiScore.innerText = current;
+    if (current >= target) clearInterval(timer);
+  }, 15);
+};
+
 init();

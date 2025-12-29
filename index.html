@@ -95,6 +95,7 @@
       </aside>
       <main class="preview-panel">
         <div class="toolbar">
+          <button id="aiBtn" class="btn btn-ai">✨ AI Review</button>
           <button id="downloadBtn" class="btn btn-primary">⬇ Download PDF</button>
         </div>
         <div id="resumePreview" class="resume-page">
@@ -141,6 +142,29 @@
           </div>
         </div>
       </main>
+    </div>
+    <!-- AI Modal -->
+    <div id="aiModal" class="modal-overlay hidden">
+      <div class="glass-modal">
+        <div class="modal-header">
+          <h2>🤖 AI Resume Analyst</h2>
+          <button id="closeAiBtn" class="close-modal">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="ai-score-container">
+             <div class="score-circle">
+               <span id="aiScore">0</span>%
+               <span class="score-label">Optimization</span>
+             </div>
+          </div>
+          <div id="aiFeedback" class="ai-feedback-list">
+            <!-- Dynamic Feedback -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="aiAckBtn" class="btn btn-primary">Got it</button>
+        </div>
+      </div>
     </div>
     <script type="module" src="./main.js"></script>
   </body>
